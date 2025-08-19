@@ -1,0 +1,136 @@
+<!doctype html>
+<!-- BETA BUILD – DEMO (India Adapted, English) -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>1xBet SmartStack DEMO — India</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    :root{ --bg:#0b0f14; --card:#0f1520; --line:rgba(255,255,255,.08); --neon:#60f7a2; --vio:#7c7cff; --text:#dbe7ff; }
+    html,body{height:100%}
+    body{
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(124,124,255,.12), transparent),
+        radial-gradient(1000px 600px at 110% 0%, rgba(96,247,162,.10), transparent),
+        var(--bg);
+    }
+    .wrap{max-width:1100px}
+    .glass{background:rgba(0,0,0,.4);backdrop-filter:blur(8px)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(6px)}
+    .btn{border:1px solid rgba(96,247,162,.35);color:#e8fff0;background:rgba(96,247,162,.08);padding:.75rem 1.1rem;border-radius:12px;transition:.2s}
+    .btn:hover{box-shadow:0 0 0 3px rgba(96,247,162,.12),0 0 24px rgba(96,247,162,.35) inset}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn-ghost{border:1px solid rgba(124,124,255,.35);background:rgba(124,124,255,.08);color:#EAEAFE}
+    .chip{border:1px solid rgba(124,124,255,.4);background:rgba(124,124,255,.12);color:#eaeafe;border-radius:999px;padding:.25rem .6rem;font-size:.8rem}
+    .console-surface{background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.06);border-radius:12px;backdrop-filter:blur(3px)}
+    .game-card{transition:.2s}
+    .game-card:hover{box-shadow:0 0 0 3px rgba(124,124,255,.12) inset}
+    .cell{display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);transition:.15s}
+    .cell:hover{box-shadow:0 0 0 3px rgba(124,124,255,.12) inset}
+    .cell-sm{width:48px;height:48px}
+    @media (min-width:768px){.cell-sm{width:56px;height:56px}}
+    .modal-overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+      background: radial-gradient(500px 300px at 50% 30%, rgba(96,247,162,.10), transparent), rgba(7,10,14,.65)}
+    .modal{width:min(92vw,620px);outline:none}
+    .modal-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(124,124,255,.25);border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.45)}
+    .hidden-panel{display:none}
+    .pe-none{pointer-events:none !important}
+    .focus-ring:focus{outline:2px solid rgba(124,124,255,.55);outline-offset:2px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body class="min-h-screen selection:bg-emerald-500/20 selection:text-emerald-100">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-white/5 glass">
+    <div class="wrap mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="font-semibold text-base sm:text-lg">
+        <span class="text-green-300">1xBet</span><span class="text-gray-400"> // </span>
+        <span class="text-indigo-300">SmartStack DEMO</span>
+        <span class="chip ml-2">India</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="attemptChip" class="chip" aria-live="polite">Trial: 0/5</span>
+        <span id="timerChip" class="chip" aria-live="polite">Time left: 30:00</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ID Screen -->
+  <main id="appRoot" class="wrap mx-auto px-4 py-6 md:py-8">
+    <section id="screen-id">
+      <div class="card p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-semibold mb-2">Connect your 1xBet ID</h1>
+        <p class="text-sm md:text-base text-blue-100/70 mb-6">Enter <b>exactly 10 digits</b> starting with <b>135</b>. Example: <span class="mono">135XXXXXXX</span></p>
+        <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+          <input id="idInput" inputmode="numeric" autocomplete="off" maxlength="10" aria-describedby="idHint"
+            class="w-full bg-slate-900 text-slate-100 placeholder-slate-500 border border-white/10 rounded-lg px-4 py-3 tracking-widest text-lg focus-ring"
+            placeholder="135XXXXXXX" />
+          <button id="btnConnect" class="btn text-lg sm:w-40 focus-ring" disabled>Connect</button>
+        </div>
+        <p id="idHint" class="text-rose-400 text-sm mt-3 hidden">ID must start with <span class="mono">135</span>.</p>
+      </div>
+    </section>
+
+    <!-- Selection screen -->
+    <section id="screen-select" class="hidden-panel" aria-hidden="true">
+      <div class="mb-4 flex items-center gap-2">
+        <span class="chip" id="attemptInline">Trial: 0/5</span>
+        <span class="chip" id="timerInline">Time left: 30:00</span>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="game-card card p-6 flex flex-col">
+          <div class="flex items-center justify-between mb-1"><h3 class="text-xl font-semibold">Aviator</h3><span class="chip">hot</span></div>
+          <p class="text-blue-100/70 mb-4">Crash game, one prediction.</p>
+          <div class="mt-auto"><button class="btn w-28" data-open="aviator">Open</button></div>
+        </article>
+        <article class="game-card card p-6 flex flex-col">
+          <h3 class="text-xl font-semibold mb-1">Mines</h3>
+          <p class="text-blue-100/70 mb-4">5×5 board, bombs are <span class="mono">💥</span>.</p>
+          <div class="mt-auto"><button class="btn w-28" data-open="mines">Open</button></div>
+        </article>
+        <article class="game-card card p-6 flex flex-col">
+          <h3 class="text-xl font-semibold mb-1">Penalty</h3>
+          <p class="text-blue-100/70 mb-4">Goal 4×6, target is <span class="mono">⚽️</span>.</p>
+          <div class="mt-auto"><button class="btn w-28" data-open="penalty">Open</button></div>
+        </article>
+      </div>
+
+      <div id="console" class="mt-6">
+        <h4 class="font-semibold mb-2">Console Log</h4>
+        <div class="console-surface p-3 h-48 overflow-auto">
+          <pre id="logBox" class="mono text-sm whitespace-pre-wrap" aria-live="polite"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game screens (Aviator / Mines / Penalty) -->
+    <!-- (Texts inside buttons and labels changed to English) -->
+
+    <!-- Intro modal -->
+    <div id="introOverlay" class="modal-overlay" aria-hidden="true">
+      <div class="modal-card p-6 md:p-7">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-2">Your account is NEW and may be under review by 1xBet.</h2>
+        <p class="text-blue-100/85 mb-5">You have <b>5 trial predictions</b>.</p>
+        <button id="btnContinue" type="button" class="btn focus-ring">Continue</button>
+      </div>
+    </div>
+
+    <!-- End modal -->
+    <div id="endOverlay" class="modal-overlay" aria-hidden="true">
+      <div class="modal-card p-6 md:p-7">
+        <h2 id="endTitle" class="text-2xl md:text-3xl font-semibold mb-2">Your trial predictions are finished.</h2>
+        <p class="text-blue-100/80 mb-5">
+          Send your secret code <span class="mono">“0910”</span> to <span class="mono">@SmartStackHubBot</span> on Telegram to get full access.
+        </p>
+        <a id="endTgBtn" class="btn inline-flex items-center gap-2 focus-ring" href="https://t.me/SmartStackHubBot" target="_blank" rel="noopener">
+          Open Telegram @SmartStackHubBot
+        </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
