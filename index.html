@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- BETA BUILD – DEMO (India Adapted, English) -->
+<!-- BETA BUILD – DEMO (India • EN)  -->
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -58,23 +58,24 @@
     </div>
   </header>
 
-  <!-- ID Screen -->
+  <!-- Main app root (background clicks can be disabled via JS) -->
   <main id="appRoot" class="wrap mx-auto px-4 py-6 md:py-8">
+    <!-- ID -->
     <section id="screen-id">
       <div class="card p-6 md:p-8">
         <h1 class="text-2xl md:text-3xl font-semibold mb-2">Connect your 1xBet ID</h1>
         <p class="text-sm md:text-base text-blue-100/70 mb-6">Enter <b>exactly 10 digits</b> starting with <b>135</b>. Example: <span class="mono">135XXXXXXX</span></p>
         <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-          <input id="idInput" inputmode="numeric" autocomplete="off" maxlength="10" aria-describedby="idHint"
+          <input id="idInput" type="text" inputmode="numeric" pattern="\\d*" autocomplete="off" maxlength="10" aria-describedby="idHint"
             class="w-full bg-slate-900 text-slate-100 placeholder-slate-500 border border-white/10 rounded-lg px-4 py-3 tracking-widest text-lg focus-ring"
             placeholder="135XXXXXXX" />
           <button id="btnConnect" class="btn text-lg sm:w-40 focus-ring" disabled>Connect</button>
         </div>
-        <p id="idHint" class="text-rose-400 text-sm mt-3 hidden">ID must start with <span class="mono">135</span>.</p>
+        <p id="idHint" class="text-rose-400 text-sm mt-3 hidden">ID must start with <span class="mono">135</span> and be 10 digits.</p>
       </div>
     </section>
 
-    <!-- Selection screen -->
+    <!-- Select + Console -->
     <section id="screen-select" class="hidden-panel" aria-hidden="true">
       <div class="mb-4 flex items-center gap-2">
         <span class="chip" id="attemptInline">Trial: 0/5</span>
@@ -107,30 +108,185 @@
       </div>
     </section>
 
-    <!-- Game screens (Aviator / Mines / Penalty) -->
-    <!-- (Texts inside buttons and labels changed to English) -->
+    <!-- Aviator -->
+    <section id="screen-aviator" class="hidden-panel">
+      <div class="card p-6 md:p-8">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl font-semibold">Aviator — Prediction</h3>
+          <button data-back class="btn-ghost px-4">Back</button>
+        </div>
+        <div class="mt-6"><button id="aviatorGet" class="btn w-44">Get prediction</button></div>
+        <div class="mt-8 flex justify-center"><div class="text-5xl">✈️</div></div>
+        <div class="mt-3 flex justify-center"><div id="aviatorChip" class="chip rounded-full px-5 py-2 text-2xl font-bold">–</div></div>
+      </div>
+    </section>
 
-    <!-- Intro modal -->
-    <div id="introOverlay" class="modal-overlay" aria-hidden="true">
+    <!-- Mines -->
+    <section id="screen-mines" class="hidden-panel">
+      <div class="card p-6 md:p-8">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl font-semibold">Mines — Prediction</h3>
+          <button data-back class="btn-ghost px-4">Back</button>
+        </div>
+        <div class="mt-6"><button id="minesGet" class="btn">Get prediction</button></div>
+        <div class="mt-6 flex justify-center"><div id="minesGrid" class="grid grid-cols-5 gap-3"></div></div>
+      </div>
+    </section>
+
+    <!-- Penalty -->
+    <section id="screen-penalty" class="hidden-panel">
+      <div class="card p-6 md:p-8">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl font-semibold">Penalty — Prediction</h3>
+          <button data-back class="btn-ghost px-4">Back</button>
+        </div>
+        <div class="mt-6"><button id="penaltyGet" class="btn">Get prediction</button></div>
+        <div class="mt-6 flex justify-center"><div id="penaltyGrid" class="grid grid-cols-6 gap-3"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modals OUTSIDE of appRoot so background blocking doesn't cover them -->
+  <!-- Intro -->
+  <div id="introOverlay" class="modal-overlay" aria-hidden="true">
+    <div id="introDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="introTitle" aria-describedby="introDesc" tabindex="-1">
       <div class="modal-card p-6 md:p-7">
-        <h2 class="text-2xl md:text-3xl font-semibold mb-2">Your account is NEW and may be under review by 1xBet.</h2>
-        <p class="text-blue-100/85 mb-5">You have <b>5 trial predictions</b>.</p>
+        <h2 id="introTitle" class="text-2xl md:text-3xl font-semibold mb-2">
+          Your account is NEW and may be temporarily reviewed by 1xBet.
+        </h2>
+        <p id="introDesc" class="text-blue-100/85 mb-5">You have <b>5 trial predictions</b>.</p>
         <button id="btnContinue" type="button" class="btn focus-ring">Continue</button>
       </div>
     </div>
+  </div>
 
-    <!-- End modal -->
-    <div id="endOverlay" class="modal-overlay" aria-hidden="true">
+  <!-- Finish -->
+  <div id="endOverlay" class="modal-overlay" aria-hidden="true">
+    <div id="endDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="endTitle" aria-describedby="endDesc" tabindex="-1">
       <div class="modal-card p-6 md:p-7">
         <h2 id="endTitle" class="text-2xl md:text-3xl font-semibold mb-2">Your trial predictions are finished.</h2>
-        <p class="text-blue-100/80 mb-5">
+        <p id="endDesc" class="text-blue-100/80 mb-5">
           Send your secret code <span class="mono">“0910”</span> to <span class="mono">@SmartStackHubBot</span> on Telegram to get full access.
         </p>
         <a id="endTgBtn" class="btn inline-flex items-center gap-2 focus-ring" href="https://t.me/SmartStackHubBot" target="_blank" rel="noopener">
-          Open Telegram @SmartStackHubBot
+          Open Telegram · @SmartStackHubBot
         </a>
       </div>
     </div>
-  </main>
+  </div>
+
+  <script>
+    // ===== State =====
+    const State={key:'smartstack_demo_state_v5',max:5,dur:30*60*1000,activated:false,id:null,startAt:null,used:0,locked:false,reason:null,timer:null,logT:null,buf:[]};
+
+    // ===== Elements =====
+    const el={
+      app:document.getElementById('appRoot'),
+      // screens
+      sId:document.getElementById('screen-id'), sSel:document.getElementById('screen-select'),
+      sA:document.getElementById('screen-aviator'), sM:document.getElementById('screen-mines'), sP:document.getElementById('screen-penalty'),
+      // id
+      id:document.getElementById('idInput'), btnConn:document.getElementById('btnConnect'), hint:document.getElementById('idHint'),
+      // chips
+      cTry:document.getElementById('attemptChip'), cTime:document.getElementById('timerChip'),
+      cTry2:document.getElementById('attemptInline'), cTime2:document.getElementById('timerInline'),
+      // console
+      log:document.getElementById('logBox'),
+      // modals
+      introO:document.getElementById('introOverlay'), introD:document.getElementById('introDialog'), btnGo:document.getElementById('btnContinue'),
+      endO:document.getElementById('endOverlay'), endD:document.getElementById('endDialog'), endBtn:document.getElementById('endTgBtn'),
+      // games
+      aGet:document.getElementById('aviatorGet'), aChip:document.getElementById('aviatorChip'),
+      mGet:document.getElementById('minesGet'), mGrid:document.getElementById('minesGrid'),
+      pGet:document.getElementById('penaltyGet'), pGrid:document.getElementById('penaltyGrid')
+    };
+
+    // ===== Utils =====
+    const ID_RE=/^135\d{7}$/; // 10 digits total, starting with 135
+    const fmt=(ms)=>`${String(Math.max(0,Math.floor(ms/60000))).padStart(2,'0')}:${String(Math.max(0,Math.floor((ms%60000)/1000))).padStart(2,'0')}`;
+    const logId=()=> '135'+Math.floor(Math.random()*1e7).toString().padStart(7,'0');
+    const avVal=()=> (Math.random()*(40.99-0.01)+0.01).toFixed(2);
+    const show=(name)=>{ const map={id:el.sId,select:el.sSel,aviator:el.sA,mines:el.sM,penalty:el.sP}; Object.values(map).forEach(v=>v.classList.add('hidden-panel')); map[name].classList.remove('hidden-panel'); el.sSel.setAttribute('aria-hidden',name==='id'?'true':'false'); };
+    const save=()=>localStorage.setItem(State.key,JSON.stringify({activated:State.activated,id:State.id,startAt:State.startAt,used:State.used,locked:State.locked,reason:State.reason}));
+    const load=()=>{try{const r=localStorage.getItem(State.key); if(!r)return; const s=JSON.parse(r); Object.assign(State,s);}catch{}};
+    const setBgInteractive=(on)=> el.app.classList.toggle('pe-none',!on || State.locked);
+
+    // Focus trap for modals
+    const trap=(node)=>{ const h=(e)=>{ if(e.key!=='Tab')return; const fs=[...node.querySelectorAll('a[href],button:not([disabled]),select:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])')]; if(!fs.length)return; const f=fs[0],l=fs[fs.length-1]; if(!e.shiftKey&&document.activeElement===l){e.preventDefault();f.focus()} if(e.shiftKey&&document.activeElement===f){e.preventDefault();l.focus()} }; document.addEventListener('keydown',h,true); node._trap=h; };
+    const untrap=(node)=>{ if(node&&node._trap){document.removeEventListener('keydown',node._trap,true); node._trap=null;} };
+    const blockEscOn=()=>document.addEventListener('keydown',escBlock,true);
+    const blockEscOff=()=>document.removeEventListener('keydown',escBlock,true);
+    const escBlock=(e)=>{ if(e.key==='Escape') e.preventDefault(); };
+
+    // Timer & chips
+    const tickTime=()=>{ const left=(State.startAt?State.startAt+State.dur:Date.now()+State.dur)-Date.now(); const lbl=`Time left: ${fmt(left)}`; el.cTime.textContent=lbl; el.cTime2.textContent=lbl; if(left<=0&&!State.locked) finish('time'); };
+    const updChips=()=>{ const lbl=`Trial: ${State.used}/${State.max}`; el.cTry.textContent=lbl; el.cTry2.textContent=lbl; };
+
+    // ====== FIXED ID INPUT ======
+    // Old code blocked non-digit keydowns and could break input on some keyboards.
+    // New approach: allow typing/paste freely, then sanitize to digits and cap to 10.
+    function onIdInput(){
+      const raw = el.id.value.replace(/\D/g,'').slice(0,10);
+      if(el.id.value !== raw) el.id.value = raw; // reflect sanitized value
+      const ok = ID_RE.test(raw);
+      el.btnConn.disabled = !ok;
+      // Show hint only when length is 10 but regex fails (or when starts wrong)
+      const showHint = raw.length === 10 && !ok;
+      el.hint.classList.toggle('hidden', !showHint);
+    }
+    el.id.addEventListener('input', onIdInput);
+
+    // ===== ID Flow =====
+    el.btnConn.addEventListener('click',()=>{ const v=el.id.value.trim(); if(!ID_RE.test(v)) return; State.activated=true; State.id=v; State.used=0; State.locked=false; State.reason=null; State.startAt=null; save(); show('select'); updChips(); openIntro(); });
+
+    // ===== Intro Modal =====
+    function openIntro(){ setBgInteractive(false); el.introO.style.display='flex'; el.introO.removeAttribute('aria-hidden'); trap(el.introD); blockEscOn(); requestAnimationFrame(()=>el.btnGo && el.btnGo.focus()); }
+    function closeIntro(){ el.introO.style.display='none'; el.introO.setAttribute('aria-hidden','true'); untrap(el.introD); blockEscOff(); setBgInteractive(true); }
+    el.btnGo.addEventListener('click',()=>{ State.startAt=Date.now(); save(); closeIntro(); startLog(); startTimer(); });
+
+    // ===== Timer =====
+    function startTimer(){ stopTimer(); tickTime(); State.timer=setInterval(tickTime,1000); }
+    function stopTimer(){ if(State.timer){clearInterval(State.timer); State.timer=null;} }
+
+    // ===== Attempts =====
+    const canAct=()=> !State.locked && State.startAt!==null && (State.startAt+State.dur-Date.now())>0;
+    function useAttempt(){ if(!canAct()){ if(State.locked) openEnd(); else if(State.startAt===null) openIntro(); else finish('time'); return false; } State.used=Math.min(State.max,State.used+1); updChips(); save(); if(State.used>=State.max){ finish('limit'); return false; } return true; }
+
+    // ===== Finish Modal =====
+    function finish(reason){ if(State.locked) return; State.locked=true; State.reason=reason; save(); stopTimer(); stopLog(); setBgInteractive(false);
+      document.getElementById('endTitle').textContent = (reason==='time') ? 'Your demo time has expired.' : 'Your trial predictions are finished.'; openEnd(); }
+    function openEnd(){ el.endO.style.display='flex'; el.endO.removeAttribute('aria-hidden'); trap(el.endD); blockEscOn(); requestAnimationFrame(()=>el.endBtn && el.endBtn.focus()); }
+
+    // ===== Console feed =====
+    function startLog(){ stopLog(); nextLine(); }
+    function stopLog(){ if(State.logT){clearTimeout(State.logT); State.logT=null;} }
+    function nextLine(){ State.logT=setTimeout(()=>{ const id=logId(); const t=Math.floor(Math.random()*3); const line = t===0?`ID ${id} predict Aviator — ${avVal()}`: t===1?`ID ${id} predict Mines`:`ID ${id} predict Penalty`; State.buf.push(line); if(State.buf.length>200) State.buf.splice(0,State.buf.length-200); el.log.textContent=State.buf.join('\n'); el.log.parentElement.scrollTop=el.log.parentElement.scrollHeight; nextLine(); },1000+Math.floor(Math.random()*1001)); }
+
+    // ===== Games =====
+    document.querySelectorAll('[data-open="aviator"]').forEach(b=>b.addEventListener('click',()=>show('aviator')));
+    document.querySelectorAll('[data-open="mines"]').forEach(b=>b.addEventListener('click',()=>show('mines')));
+    document.querySelectorAll('[data-open="penalty"]').forEach(b=>b.addEventListener('click',()=>show('penalty')));
+    document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>show('select')));
+
+    el.aGet.addEventListener('click',()=>{ if(!useAttempt()) return; el.aChip.textContent=avVal(); });
+
+    // Mines grid + action (3 💥)
+    (function buildM(){ el.mGrid.innerHTML=''; for(let i=0;i<25;i++){ const d=document.createElement('div'); d.className='cell cell-sm text-xl select-none'; el.mGrid.appendChild(d);} })();
+    el.mGet.addEventListener('click',()=>{ if(!useAttempt())return; const cells=[...el.mGrid.children]; cells.forEach(c=>c.textContent=''); const s=new Set(); while(s.size<3) s.add(Math.floor(Math.random()*25)); [...s].forEach(i=>cells[i].textContent='💥'); });
+
+    // Penalty grid + action (⚽️)
+    (function buildP(){ el.pGrid.innerHTML=''; for(let i=0;i<24;i++){ const d=document.createElement('div'); d.className='cell cell-sm text-xl select-none'; el.pGrid.appendChild(d);} })();
+    el.pGet.addEventListener('click',()=>{ if(!useAttempt())return; const cells=[...el.pGrid.children]; cells.forEach(c=>c.textContent=''); cells[Math.floor(Math.random()*24)].textContent='⚽️'; });
+
+    // ===== Boot =====
+    (function boot(){
+      load(); updChips();
+      // Ensure ID field reflects sanitized state on reload (and enables Connect if valid)
+      onIdInput();
+      if(State.locked){ show('select'); setBgInteractive(false); document.getElementById('endTitle').textContent=(State.reason==='time')?'Your demo time has expired.':'Your trial predictions are finished.'; openEnd(); return; }
+      if(State.activated){ show('select'); if(State.startAt===null){ openIntro(); } else { setBgInteractive(true); startLog(); startTimer(); } return; }
+      show('id'); setBgInteractive(true);
+    })();
+  </script>
 </body>
 </html>
